@@ -1,23 +1,39 @@
 import streamlit as st
-import random
+import spacy
 import time
 
+# Load the spaCy English model
+nlp = spacy.load("en_core_web_sm")
 
-# Streamed response emulator
-def response_generator():
-    response = random.choice(
-        [
-            "Hello there! How can I assist you today?",
-            "Hi, human! Is there anything I can help you with?",
-            "Do you need help?",
-        ]
-    )
-    for word in response.split():
-        yield word + " "
-        time.sleep(0.05)
+# Chatbot response function
+def chatbot_response(user_input):
+    # Process the user input
+    doc = nlp(user_input)
 
+    # Define responses based on keywords and topics
+    if "hello" in user_input.lower() or "hi" in user_input.lower():
+        return "Hello! How can I help you with electric vehicles today?"
 
-st.title("Simple chat")
+    if "electric vehicle" in user_input.lower() or "ev" in user_input.lower():
+        return "Electric vehicles are environmentally friendly and cost-effective in the long run. They offer great performance and a quiet ride."
+
+    if "range" in user_input.lower():
+        return "The average range of electric vehicles varies depending on the model, but many EVs can travel between 200 to 300 miles on a single charge."
+
+    if "charging" in user_input.lower():
+        return "Charging an electric vehicle can be done at home or at public charging stations. Fast chargers can recharge an EV in about 30 minutes to an hour."
+
+    if "price" in user_input.lower():
+        return "The price of electric vehicles varies depending on the make and model. Some EVs start as low as $35,000, while others can cost over $100,000."
+
+    if "warranty" in user_input.lower():
+        return "Most electric vehicles come with a warranty of around 8 years or 100,000 miles on the battery. Other components are typically covered for 3 to 5 years."
+
+    # Default response
+    return "I'm sorry, I didn't understand that question. Can you please rephrase it?"
+
+# Streamlit app title
+st.title("EV Chatbot")
 
 # Initialize chat history
 if "messages" not in st.session_state:
@@ -36,8 +52,13 @@ if prompt := st.chat_input("What is up?"):
     with st.chat_message("user"):
         st.markdown(prompt)
 
+    # Generate response using chatbot function
+    response = chatbot_response(prompt)
+    
     # Display assistant response in chat message container
     with st.chat_message("assistant"):
-        response = st.write_stream(response_generator())
+        st.markdown(response)
+    
     # Add assistant response to chat history
     st.session_state.messages.append({"role": "assistant", "content": response})
+
