@@ -1,10 +1,10 @@
-import json
+#import json
 
 # Provide the specific path to your JSON file
 json_file_path = "/Users/stephaniezhang/Desktop/EV_Data.json"
 
 # Load the JSON file
-with open(json_file_path, "r") as file:
+#with open(json_file_path, "r") as file:
     ev_data = json.load(file)
 
 
